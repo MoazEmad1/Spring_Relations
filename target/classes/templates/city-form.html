@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>Cities Form</h1>
+<form th:action="@{/cities/save}" th:object="${city}" method="post">
+
+    <input type="hidden" th:field="*{id}">
+    <label>Name: <input type="text" th:field="*{name}"></label><br>
+    <input type="submit" value="Save">
+</form>
+</body>
+</html>

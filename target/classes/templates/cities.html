@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>Cities</h1>
+<ul>
+    <li th:each="city : ${cities}">
+        <p>Name: <span th:text="${city.name}"></span></p>
+        <p>Actors:</p>
+        <ul>
+            <li th:each="actor : ${city.actors}">
+                <span th:text="${actor.name}"></span>
+            </li>
+        </ul>
+        <a th:href="@{/cities/edit/{id}(id=${city.id})}">Edit</a>
+        <a th:href="@{/cities/delete/{id}(id=${city.id})}">Delete</a>
+        <br/><br/><br/>
+</ul>
+<a href="/cities/add">Add City</a>
+</body>
+</html>

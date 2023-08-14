@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>Actor Form</h1>
+<form th:action="@{/actors/save}" th:object="${actor}" method="post">
+
+    <input type="hidden" th:field="*{id}">
+    <label>Name: <input type="text" th:field="*{name}"></label><br>
+    <label>Age: <input type="number" th:field="*{age}"></label><br>
+    <label>City: <select th:field="*{city}">
+        <option th:each="city : ${cities}" th:value="${city.id}" th:text="${city.name}"></option>
+    </select></label><br>
+    <label>Movies:</label><br>
+    <div th:each="movie : ${movies}">
+        <label>
+            <input type="checkbox" name="selectedMovies" th:value="${movie.id}"/> <span th:text="${movie.title}"></span>
+        </label><br>
+    </div><br>
+    <input type="submit" value="Save">
+</form>
+</body>
+</html>

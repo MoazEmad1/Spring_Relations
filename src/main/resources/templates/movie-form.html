@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>Movie Form</h1>
+<form th:action="@{/movies/save}" th:object="${movie}" method="post">
+
+    <input type="hidden" th:field="*{id}">
+    <label>Title: <input type="text" th:field="*{title}"></label><br>
+    <label>Actors:</label><br>
+    <div th:each="actor : ${actors}">
+        <label>
+            <input type="checkbox" name="selectedActors" th:value="${actor.id}"/> <span th:text="${actor.name}"></span>
+        </label><br>
+    </div><br>
+    <input type="submit" value="Save">
+</form>
+</body>
+</html>
