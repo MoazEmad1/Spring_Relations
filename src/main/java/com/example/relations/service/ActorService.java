@@ -33,12 +33,10 @@ public class ActorService {
             existingActor.setName(actor.getName());
             existingActor.setAge(actor.getAge());
             existingActor.setCity(actor.getCity());
-
             for (Movie movie : existingActor.getMovies()) {
                 movie.getActors().remove(existingActor);
             }
             existingActor.getMovies().clear();
-
             if (selectedMovies != null) {
                 List<Movie> selectedMovieList = movieRepository.findAllById(selectedMovies);
 
@@ -47,7 +45,6 @@ public class ActorService {
                     movie.getActors().add(existingActor);
                 }
             }
-
             actorRepository.save(existingActor);
         }else {
             if (selectedMovies != null) {
@@ -59,7 +56,6 @@ public class ActorService {
                 }
             }
             actorRepository.save(actor);
-
         }
     }
 
@@ -75,7 +71,6 @@ public class ActorService {
                 city.getActors().remove(actor);
                 actor.setCity(null);
             }
-
             actorRepository.delete(actor);
         }
     }

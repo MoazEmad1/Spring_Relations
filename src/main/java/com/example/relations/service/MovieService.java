@@ -23,29 +23,23 @@ public class MovieService {
 
     public void saveMovie(Movie movie, List<Integer> selectedActors) {
         Movie existingMovie = movieRepository.findById(movie.getId()).orElse(null);
-
         if (existingMovie != null) {
             existingMovie.setTitle(movie.getTitle());
-
             for (Actor actor : existingMovie.getActors()) {
                 actor.getMovies().remove(existingMovie);
             }
             existingMovie.getActors().clear();
-
             if (selectedActors != null) {
                 List<Actor> selectedActorList = actorRepository.findAllById(selectedActors);
-
                 for (Actor actor : selectedActorList) {
                     existingMovie.getActors().add(actor);
                     actor.getMovies().add(existingMovie);
                 }
             }
-
             movieRepository.save(existingMovie);
         } else {
             if (selectedActors != null) {
                 List<Actor> selectedActorList = actorRepository.findAllById(selectedActors);
-
                 for (Actor actor : selectedActorList) {
                     movie.getActors().add(actor);
                     actor.getMovies().add(movie);
