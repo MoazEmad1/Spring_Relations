@@ -1,65 +1,53 @@
 package com.example.relations.controller;
 
 import com.example.relations.entity.Movie;
-import com.example.relations.entity.Actor;
 import com.example.relations.service.MovieService;
 import com.example.relations.service.ActorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @Controller
+@RequestMapping("/movies")
 @RequiredArgsConstructor
 public class MovieController {
     private final MovieService movieService;
     private final ActorService actorService;
 
-    @GetMapping("/movies")
-    public String showMovies(Model model) {
-        List<Movie> movies = movieService.getMovieRepository().findAll();
+    @GetMapping
+    public String showAllMovies(Model model) {
+        List<Movie> movies = movieService.getAllMovies();
         model.addAttribute("movies", movies);
         return "movies";
     }
 
-    @GetMapping("/movies/add")
+    @GetMapping("/add")
     public String showAddMovieForm(Model model) {
         model.addAttribute("movie", new Movie());
-        model.addAttribute("actors", actorService.getActorRepository().findAll());
-
+        model.addAttribute("actors", actorService.getAllActors());
         return "movie-form";
     }
 
-    @PostMapping("/movies/save")
+    @PostMapping("/save")
     public String saveMovie(@ModelAttribute Movie movie,
                             @RequestParam(name = "selectedActors", required = false) List<Integer> selectedActors) {
-        movieService.getMovieRepository().save(movie);
-
-        if (selectedActors != null) {
-            List<Actor> selectedActorList = actorService.getActorRepository().findAllById(selectedActors);
-            movie.setActors(selectedActorList);
-
-            for (Actor actor : selectedActorList) {
-                actor.getMovies().add(movie);
-                actorService.getActorRepository().save(actor);
-            }
-        }
+        movieService.saveMovie(movie, selectedActors);
         return "redirect:/movies";
     }
 
-    @GetMapping("/movies/edit/{id}")
+    @GetMapping("/edit/{id}")
     public String showEditMovieForm(@PathVariable int id, Model model) {
-        Movie movie = movieService.getMovieRepository().findById(id).orElse(null);
+        Movie movie = movieService.getMovieById(id);
         model.addAttribute("movie", movie);
-        model.addAttribute("actors", actorService.getActorRepository().findAll());
+        model.addAttribute("actors", actorService.getAllActors());
         return "movie-form";
     }
 
-    @GetMapping("/movies/delete/{id}")
+    @GetMapping("/delete/{id}")
     public String deleteMovie(@PathVariable int id) {
-        movieService.getMovieRepository().deleteById(id);
+        movieService.deleteMovieById(id);
         return "redirect:/movies";
     }
 }

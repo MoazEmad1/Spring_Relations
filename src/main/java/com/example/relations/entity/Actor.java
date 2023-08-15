@@ -2,16 +2,12 @@ package com.example.relations.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-
 import java.util.ArrayList;
-import java.util.List; // Import the List interface
+import java.util.List;
 
 @Entity
-@Getter
-@Setter
+@Data
 @RequiredArgsConstructor
 public class Actor {
     @Id
@@ -26,4 +22,12 @@ public class Actor {
     @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "city_id")
     private City city;
+    @Override
+    public String toString() {
+        return "Actor{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", age=" + age +
+                '}';
+    }
 }

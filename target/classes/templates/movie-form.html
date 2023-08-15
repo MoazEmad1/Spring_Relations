@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -13,7 +13,9 @@
     <label>Actors:</label><br>
     <div th:each="actor : ${actors}">
         <label>
-            <input type="checkbox" name="selectedActors" th:value="${actor.id}"/> <span th:text="${actor.name}"></span>
+            <input type="checkbox" name="selectedActors" th:value="${actor.id}"
+                   th:checked="${movie.actors.contains(actor)}"/>
+            <span th:text="${actor.name}"></span>
         </label><br>
     </div><br>
     <input type="submit" value="Save">

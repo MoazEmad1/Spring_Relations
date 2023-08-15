@@ -17,7 +17,9 @@
     <label>Movies:</label><br>
     <div th:each="movie : ${movies}">
         <label>
-            <input type="checkbox" name="selectedMovies" th:value="${movie.id}"/> <span th:text="${movie.title}"></span>
+            <input type="checkbox" name="selectedMovies" th:value="${movie.id}"
+                   th:checked="${actor.movies.contains(movie)}"/>
+            <span th:text="${movie.title}"></span>
         </label><br>
     </div><br>
     <input type="submit" value="Save">
