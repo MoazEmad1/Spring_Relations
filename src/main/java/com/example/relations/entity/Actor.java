@@ -1,6 +1,8 @@
 package com.example.relations.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import java.util.ArrayList;
@@ -8,7 +10,9 @@ import java.util.List;
 
 @Entity
 @Data
+@Builder
 @RequiredArgsConstructor
+@AllArgsConstructor
 public class Actor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,7 +21,7 @@ public class Actor {
     private int age;
 
     @ManyToMany(mappedBy = "actors")
-    private List<Movie> movies = new ArrayList<>();
+    private List<Movie> movies = new ArrayList<Movie>();
 
     @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "city_id")

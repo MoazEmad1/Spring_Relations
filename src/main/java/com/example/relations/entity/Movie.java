@@ -1,13 +1,14 @@
 package com.example.relations.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
+
 import java.util.List;
 
 @Entity
 @Data
 @RequiredArgsConstructor
+@Builder
 public class Movie {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,4 +21,10 @@ public class Movie {
             inverseJoinColumns = @JoinColumn(name = "actor_id")
     )
     private List<Actor> actors;
+
+    public Movie(Integer id, String title, List<Actor> actors) {
+        this.id = id;
+        this.title = title;
+        this.actors = actors;
+    }
 }

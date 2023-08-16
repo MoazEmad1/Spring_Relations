@@ -16,7 +16,6 @@ import java.util.Optional;
 public class ActorService {
     private final ActorRepository actorRepository;
     private final MovieRepository movieRepository;
-    private final CityRepository cityRepository;
 
     public List<Actor> getAllActors() {
         return actorRepository.findAll();
