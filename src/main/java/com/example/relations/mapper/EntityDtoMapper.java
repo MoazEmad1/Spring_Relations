@@ -15,9 +15,6 @@ public class EntityDtoMapper {
     private static Map<Object, Object> mappedObjects = new HashMap<>();
 
     public static CityDto mapCityToDto(City city) {
-        if (city == null) {
-            return null;
-        }
         if (mappedObjects.containsKey(city)) {
             return (CityDto) mappedObjects.get(city);
         }
@@ -35,9 +32,6 @@ public class EntityDtoMapper {
     }
 
     public static ActorDto mapActorToDto(Actor actor) {
-        if (actor == null) {
-            return null;
-        }
         if (mappedObjects.containsKey(actor)) {
             return (ActorDto) mappedObjects.get(actor);
         }
@@ -55,9 +49,6 @@ public class EntityDtoMapper {
     }
 
     public static MovieDto mapMovieToDto(Movie movie) {
-        if (movie == null) {
-            return null;
-        }
         if (mappedObjects.containsKey(movie)) {
             return (MovieDto) mappedObjects.get(movie);
         }
@@ -74,9 +65,6 @@ public class EntityDtoMapper {
     }
 
     public static City mapDtoToCity(CityDto cityDto) {
-        if (cityDto == null) {
-            return null;
-        }
         if (mappedObjects.containsKey(cityDto)) {
             return (City) mappedObjects.get(cityDto);
         }
@@ -93,9 +81,6 @@ public class EntityDtoMapper {
     }
 
     public static Actor mapDtoToActor(ActorDto actorDto) {
-        if (actorDto == null) {
-            return null;
-        }
         if (mappedObjects.containsKey(actorDto)) {
             return (Actor) mappedObjects.get(actorDto);
         }
@@ -112,9 +97,6 @@ public class EntityDtoMapper {
     }
 
     public static Movie mapDtoToMovie(MovieDto movieDto) {
-        if (movieDto == null) {
-            return null;
-        }
         if (mappedObjects.containsKey(movieDto)) {
             return (Movie) mappedObjects.get(movieDto);
         }
