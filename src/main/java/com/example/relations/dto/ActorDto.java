@@ -1,31 +1,23 @@
-package com.example.relations.entity;
+package com.example.relations.dto;
 
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
+
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
 @Data
-@Builder
-@RequiredArgsConstructor
+@NoArgsConstructor
 @AllArgsConstructor
-public class Actor {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+@Builder
+public class ActorDto {
     private int id;
     private String name;
     private int age;
-
-    @ManyToMany(mappedBy = "actors")
-    private List<Movie> movies = new ArrayList<>();
-
-    @ManyToOne(cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "city_id")
-    private City city;
+    private List<MovieDto> moviesDto = new ArrayList<>();
+    private CityDto cityDto;
     @Override
     public String toString() {
         return "Actor{" +

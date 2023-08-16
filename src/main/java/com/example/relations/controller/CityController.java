@@ -1,6 +1,6 @@
 package com.example.relations.controller;
 
-import com.example.relations.entity.City;
+import com.example.relations.dto.CityDto;
 import com.example.relations.service.CityService;
 import com.example.relations.service.ActorService;
 import lombok.RequiredArgsConstructor;
@@ -18,28 +18,28 @@ public class CityController {
 
     @GetMapping
     public String showAllCities(Model model) {
-        List<City> cities = cityService.getAllCities();
-        model.addAttribute("cities", cities);
+        List<CityDto> cityDtos = cityService.getAllCities();
+        model.addAttribute("cities", cityDtos);
         return "cities";
     }
 
     @GetMapping("/add")
     public String showAddCityForm(Model model) {
-        model.addAttribute("city", new City());
+        model.addAttribute("city", new CityDto());
         model.addAttribute("actors", actorService.getAllActors());
         return "city-form";
     }
 
     @PostMapping("/save")
-    public String saveCity(@ModelAttribute City city) {
-        cityService.saveCity(city);
+    public String saveCity(@ModelAttribute CityDto cityDto) {
+        cityService.saveCity(cityDto);
         return "redirect:/cities";
     }
 
     @GetMapping("/edit/{id}")
     public String showEditCityForm(@PathVariable int id, Model model) {
-        City city = cityService.getCityById(id);
-        model.addAttribute("city", city);
+        CityDto cityDto = cityService.getCityById(id);
+        model.addAttribute("city", cityDto);
         model.addAttribute("actors", actorService.getAllActors());
         return "city-form";
     }

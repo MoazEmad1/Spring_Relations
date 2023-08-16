@@ -11,7 +11,7 @@
         <p>Title: <span th:text="${movie.title}"></span></p>
         <p>Actors:</p>
         <ul>
-            <li th:each="actor : ${movie.actors}">
+            <li th:each="actor : ${movie.actorsDto}">
                 <span th:text="${actor.name}"></span>
             </li>
         </ul>

@@ -10,10 +10,10 @@
   <li th:each="actor : ${actors}">
     <p>Name: <span th:text="${actor.name}"></span></p>
     <p>Age: <span th:text="${actor.age}"></span></p>
-    <p>City: <span th:text="${actor.city.name}"></span></p>
+    <p>City: <span th:text="${actor.cityDto.name}"></span></p>
     <p>Movies:</p>
     <ul>
-      <li th:each="movie : ${actor.movies}">
+      <li th:each="movie : ${actor.moviesDto}">
         <span th:text="${movie.title}"></span>
       </li>
     </ul>

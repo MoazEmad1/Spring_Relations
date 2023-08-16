@@ -1,15 +1,18 @@
 package com.example.relations.service;
 
+import com.example.relations.dto.ActorDto;
+import com.example.relations.dto.CityDto;
 import com.example.relations.entity.Actor;
 import com.example.relations.entity.City;
 import com.example.relations.entity.Movie;
+import com.example.relations.mapper.EntityDtoMapper;
 import com.example.relations.repository.ActorRepository;
-import com.example.relations.repository.CityRepository;
 import com.example.relations.repository.MovieRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -17,44 +20,59 @@ public class ActorService {
     private final ActorRepository actorRepository;
     private final MovieRepository movieRepository;
 
-    public List<Actor> getAllActors() {
-        return actorRepository.findAll();
+    public List<ActorDto> getAllActors() {
+        List<ActorDto> actorDtos = new ArrayList<>();
+        List<Actor> actors = actorRepository.findAll();
+        for (Actor actor : actors) {
+            actorDtos.add(EntityDtoMapper.mapActorToDto(actor));
+        }
+        return actorDtos;
     }
 
-    public Actor getActorById(int id) {
-        return actorRepository.findById(id).orElse(null);
+    public ActorDto getActorById(int id) {
+        Actor actor = actorRepository.findById(id).orElse(null);
+        if (actor != null) {
+            return EntityDtoMapper.mapActorToDto(actor);
+        }
+        return null;
     }
 
-    public void saveOrUpdateActor(Actor actor, List<Integer> selectedMovies) {
-        Actor existingActor = actorRepository.findById(actor.getId()).orElse(null);
+    public void saveOrUpdateActor(ActorDto actorDto, List<Integer> selectedMovies) {
+        Actor existingActor = actorRepository.findById(actorDto.getId()).orElse(null);
 
         if (existingActor != null) {
-            existingActor.setName(actor.getName());
-            existingActor.setAge(actor.getAge());
-            existingActor.setCity(actor.getCity());
-            for (Movie movie : existingActor.getMovies()) {
+            existingActor.setName(actorDto.getName());
+            existingActor.setAge(actorDto.getAge());
+            CityDto cityDto = actorDto.getCityDto();
+            City city = EntityDtoMapper.mapDtoToCity(cityDto);
+            existingActor.setCity(city);
+            List<Movie> movies = existingActor.getMovies();
+            for (Movie movie : movies) {
                 movie.getActors().remove(existingActor);
             }
-            existingActor.getMovies().clear();
+            movies.clear();
             if (selectedMovies != null) {
                 List<Movie> selectedMovieList = movieRepository.findAllById(selectedMovies);
-
                 for (Movie movie : selectedMovieList) {
-                    existingActor.getMovies().add(movie);
+                    movies.add(movie);
                     movie.getActors().add(existingActor);
                 }
             }
             actorRepository.save(existingActor);
-        }else {
+        } else {
+            Actor newActor = EntityDtoMapper.mapDtoToActor(actorDto);
+
+            CityDto cityDto = actorDto.getCityDto();
+            City city = EntityDtoMapper.mapDtoToCity(cityDto);
+            newActor.setCity(city);
             if (selectedMovies != null) {
                 List<Movie> selectedMovieList = movieRepository.findAllById(selectedMovies);
-
                 for (Movie movie : selectedMovieList) {
-                    actor.getMovies().add(movie);
-                    movie.getActors().add(actor);
+                    newActor.getMovies().add(movie);
+                    movie.getActors().add(newActor);
                 }
             }
-            actorRepository.save(actor);
+            actorRepository.save(newActor);
         }
     }
 
@@ -62,16 +80,11 @@ public class ActorService {
     public void deleteActorById(int actorId) {
         Actor actor = actorRepository.findById(actorId).orElse(null);
         if (actor != null) {
-            for (Movie movie : actor.getMovies()) {
+            List<Movie> movies = actor.getMovies();
+            for (Movie movie : movies) {
                 movie.getActors().remove(actor);
-            }
-            City city = actor.getCity();
-            if (city != null) {
-                city.getActors().remove(actor);
-                actor.setCity(null);
             }
             actorRepository.delete(actor);
         }
     }
-
 }

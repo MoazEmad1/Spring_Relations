@@ -14,7 +14,7 @@
     <div th:each="actor : ${actors}">
         <label>
             <input type="checkbox" name="selectedActors" th:value="${actor.id}"
-                   th:checked="${movie.actors.contains(actor)}"/>
+                   th:checked="${movie.actorsDto.contains(actor)}"/>
             <span th:text="${actor.name}"></span>
         </label><br>
     </div><br>

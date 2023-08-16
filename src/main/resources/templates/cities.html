@@ -11,7 +11,7 @@
         <p>Name: <span th:text="${city.name}"></span></p>
         <p>Actors:</p>
         <ul>
-            <li th:each="actor : ${city.actors}">
+            <li th:each="actor : ${city.actorsDto}">
                 <span th:text="${actor.name}"></span>
             </li>
         </ul>

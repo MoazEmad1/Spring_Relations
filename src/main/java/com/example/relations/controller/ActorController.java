@@ -1,6 +1,7 @@
 package com.example.relations.controller;
 
-import com.example.relations.entity.Actor;
+import com.example.relations.dto.ActorDto;
+import com.example.relations.dto.MovieDto;
 import com.example.relations.service.ActorService;
 import com.example.relations.service.CityService;
 import com.example.relations.service.MovieService;
@@ -20,14 +21,14 @@ public class ActorController {
 
     @GetMapping
     public String showAllActors(Model model) {
-        List<Actor> actors = actorService.getAllActors();
-        model.addAttribute("actors", actors);
+        List<ActorDto> actorDtos = actorService.getAllActors();
+        model.addAttribute("actors", actorDtos);
         return "actors";
     }
 
     @GetMapping("/add")
     public String showAddActorForm(Model model) {
-        model.addAttribute("actor", new Actor());
+        model.addAttribute("actor", new ActorDto());
         model.addAttribute("cities", cityService.getAllCities());
         model.addAttribute("movies", movieService.getAllMovies());
         return "actor-form";
@@ -35,16 +36,17 @@ public class ActorController {
 
     @PostMapping("/save")
     public String saveOrUpdateActor(
-            @ModelAttribute Actor actor,
+            @ModelAttribute ActorDto actorDto,
             @RequestParam(name = "selectedMovies", required = false) List<Integer> selectedMovies) {
-        actorService.saveOrUpdateActor(actor, selectedMovies);
+        actorService.saveOrUpdateActor(actorDto, selectedMovies);
         return "redirect:/actors";
     }
 
+
     @GetMapping("/edit/{id}")
     public String showEditActorForm(@PathVariable int id, Model model) {
-        Actor actor = actorService.getActorById(id);
-        model.addAttribute("actor", actor);
+        ActorDto actorDto = actorService.getActorById(id);
+        model.addAttribute("actor", actorDto);
         model.addAttribute("cities", cityService.getAllCities());
         model.addAttribute("movies", movieService.getAllMovies());
         return "actor-form";

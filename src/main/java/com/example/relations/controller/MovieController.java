@@ -1,6 +1,6 @@
 package com.example.relations.controller;
 
-import com.example.relations.entity.Movie;
+import com.example.relations.dto.MovieDto;
 import com.example.relations.service.MovieService;
 import com.example.relations.service.ActorService;
 import lombok.RequiredArgsConstructor;
@@ -18,29 +18,29 @@ public class MovieController {
 
     @GetMapping
     public String showAllMovies(Model model) {
-        List<Movie> movies = movieService.getAllMovies();
-        model.addAttribute("movies", movies);
+        List<MovieDto> movieDtos = movieService.getAllMovies();
+        model.addAttribute("movies", movieDtos);
         return "movies";
     }
 
     @GetMapping("/add")
     public String showAddMovieForm(Model model) {
-        model.addAttribute("movie", new Movie());
+        model.addAttribute("movie", new MovieDto());
         model.addAttribute("actors", actorService.getAllActors());
         return "movie-form";
     }
 
     @PostMapping("/save")
-    public String saveMovie(@ModelAttribute Movie movie,
+    public String saveMovie(@ModelAttribute MovieDto movieDto,
                             @RequestParam(name = "selectedActors", required = false) List<Integer> selectedActors) {
-        movieService.saveMovie(movie, selectedActors);
+        movieService.saveMovie(movieDto, selectedActors);
         return "redirect:/movies";
     }
 
     @GetMapping("/edit/{id}")
     public String showEditMovieForm(@PathVariable int id, Model model) {
-        Movie movie = movieService.getMovieById(id);
-        model.addAttribute("movie", movie);
+        MovieDto movieDto = movieService.getMovieById(id);
+        model.addAttribute("movie", movieDto);
         model.addAttribute("actors", actorService.getAllActors());
         return "movie-form";
     }
