@@ -13,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class ActorDto {
-    private int id;
+    private Integer id;
     private String name;
     private int age;
     private List<MovieDto> moviesDto = new ArrayList<>();

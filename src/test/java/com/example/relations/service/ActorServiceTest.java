@@ -1,8 +1,11 @@
 package com.example.relations.service;
 
+import com.example.relations.dto.ActorDto;
+import com.example.relations.dto.CityDto;
 import com.example.relations.entity.Actor;
 import com.example.relations.entity.City;
 import com.example.relations.entity.Movie;
+import com.example.relations.mapper.EntityDtoMapper;
 import com.example.relations.repository.ActorRepository;
 import com.example.relations.repository.CityRepository;
 import com.example.relations.repository.MovieRepository;
@@ -23,6 +26,8 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -39,44 +44,34 @@ class ActorServiceTest {
     @InjectMocks
     private ActorService actorService;
 
-    /*@Test
-    public void ActorService_CreateActor_ReturnActor() {
-        // Arrange
-        City city1 = City.builder().name("city1").build();
-        cityRepository.save(city1);
-        Movie movie1 = Movie.builder().title("movie1").actors(new ArrayList<>()).build();
-        Movie movie2 = Movie.builder().title("movie2").actors(new ArrayList<>()).build();
+    @Test
+    public void ActorService_CreateActor_ReturnActorDto() {
+        int existingActorId = 1;
+        CityDto cityDto = CityDto.builder().id(1).name("city1").build();
+        ActorDto actorDto = ActorDto.builder().id(1).name("actor1").age(20).cityDto(cityDto).build();
+        cityDto.setActorsDto(List.of(actorDto));
 
-        List<Movie> actorMovies = new ArrayList<>();
-        actorMovies.add(movie1);
-        actorMovies.add(movie2);
+        actorDto.setId(existingActorId);
+        List<Integer> selectedMovies = new ArrayList<>();
+        selectedMovies.add(1);
 
-        Actor actor = Actor.builder()
-                .name("Actor1")
-                .age(21)
-                .city(city1)
-                .movies(actorMovies)
-                .build();
+        City city =City.builder().id(1).name("city1").build();
+        Actor existingActor = Actor.builder().id(1).name("actor1").age(20).city(city).build();
+        city.setActors(List.of(existingActor));
 
-        movieRepository.save(movie1);
-        movieRepository.save(movie2);
+        existingActor.setId(existingActorId);
 
-        List<Integer> movieIds = actorMovies.stream().map(Movie::getId).collect(Collectors.toList());
+        when(actorRepository.findById(existingActorId)).thenReturn(Optional.of(existingActor));
+        when(movieRepository.findAllById(selectedMovies)).thenReturn(new ArrayList<>());
 
-        when(actorRepository.findById(actor.getId())).thenReturn(Optional.of(actor));
-        when(movieRepository.findAllById(movieIds)).thenReturn(List.of(movie1, movie2));
+        ActorDto updatedActorDto = actorService.saveOrUpdateActor(actorDto, selectedMovies);
 
-        // Act
-        actorService.saveOrUpdateActor(actor, movieIds);
+        assertThat(updatedActorDto).isNotNull();
+        assertThat(updatedActorDto.getId()).isEqualTo(existingActorId);
+        assertThat(updatedActorDto.getName()).isEqualTo(actorDto.getName());
+        assertThat(updatedActorDto.getAge()).isEqualTo(actorDto.getAge());
 
-        // Assert
-        assertThat(actor.getMovies()).containsExactly(movie1, movie2);
-        assertThat(movie1.getActors()).containsExactly(actor);
-        assertThat(movie2.getActors()).containsExactly(actor);
-
-        verify(actorRepository, times(1)).save(actor);
-        verify(movieRepository, times(2)).save(any(Movie.class));
-    }*/
+    }
 
 
     @Test

@@ -17,7 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class CityDto {
-    private int id;
+    private Integer id;
     private String name;
     private List<ActorDto> actorsDto=new ArrayList<>();
 }

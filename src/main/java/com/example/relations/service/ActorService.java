@@ -37,12 +37,13 @@ public class ActorService {
         return null;
     }
 
-    public void saveOrUpdateActor(ActorDto actorDto, List<Integer> selectedMovies) {
+    public ActorDto saveOrUpdateActor(ActorDto actorDto, List<Integer> selectedMovies) {
         Actor existingActor = actorRepository.findById(actorDto.getId()).orElse(null);
 
         if (existingActor != null) {
             existingActor.setName(actorDto.getName());
             existingActor.setAge(actorDto.getAge());
+
             CityDto cityDto = actorDto.getCityDto();
             City city = EntityDtoMapper.mapDtoToCity(cityDto);
             existingActor.setCity(city);
@@ -58,13 +59,14 @@ public class ActorService {
                     movie.getActors().add(existingActor);
                 }
             }
-            actorRepository.save(existingActor);
+            Actor savedActor = actorRepository.save(existingActor);
+
+            return EntityDtoMapper.mapActorToDto(savedActor);
         } else {
             Actor newActor = EntityDtoMapper.mapDtoToActor(actorDto);
 
             CityDto cityDto = actorDto.getCityDto();
-            City city = EntityDtoMapper.mapDtoToCity(cityDto);
-            newActor.setCity(city);
+            newActor.setCity(EntityDtoMapper.mapDtoToCity(cityDto));
             if (selectedMovies != null) {
                 List<Movie> selectedMovieList = movieRepository.findAllById(selectedMovies);
                 for (Movie movie : selectedMovieList) {
@@ -72,8 +74,10 @@ public class ActorService {
                     movie.getActors().add(newActor);
                 }
             }
-            actorRepository.save(newActor);
+            Actor savedActor = actorRepository.save(newActor);
+            return EntityDtoMapper.mapActorToDto(savedActor);
         }
+
     }
 
 

@@ -16,7 +16,7 @@ import java.util.List;
 public class Actor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
     private String name;
     private int age;
 

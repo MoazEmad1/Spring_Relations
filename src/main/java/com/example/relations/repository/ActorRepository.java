@@ -9,5 +9,5 @@ import java.util.Optional;
 
 @Repository
 public interface ActorRepository extends JpaRepository<Actor, Integer> {
-    Optional<Actor> findByCity(City city);
+    Actor findByCity(City city);
 }

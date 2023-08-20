@@ -12,9 +12,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class EntityDtoMapper {
-    private static Map<Object, Object> mappedObjects = new HashMap<>();
+    private static final Map<Object, Object> mappedObjects = new HashMap<>();
 
     public static CityDto mapCityToDto(City city) {
+
         if (mappedObjects.containsKey(city)) {
             return (CityDto) mappedObjects.get(city);
         }
@@ -68,7 +69,6 @@ public class EntityDtoMapper {
         if (mappedObjects.containsKey(cityDto)) {
             return (City) mappedObjects.get(cityDto);
         }
-
         City city = new City();
         city.setId(cityDto.getId());
         city.setName(cityDto.getName());

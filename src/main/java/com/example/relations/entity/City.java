@@ -20,5 +20,5 @@ public class City {
     private int id;
     private String name;
     @OneToMany(mappedBy = "city")
-    private List<Actor> actors=new ArrayList<Actor>();;
+    private List<Actor> actors=new ArrayList<>();;
 }

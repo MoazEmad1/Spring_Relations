@@ -31,10 +31,10 @@ class ActorRepositoryTest {
                 .movies(null).build();
         //act
         actorRepository.save(actor);
-        actorRepository.delete(actor);
+//        actorRepository.delete(actor);
 
         //assert
-        assertThat(actorRepository.findById(actor.getId())).isEmpty();
+        assertThat(actorRepository.findByCity(city1)).isEqualTo(actor);
     }
 
 }

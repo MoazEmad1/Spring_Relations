@@ -1,7 +1,6 @@
 package com.example.relations.controller;
 
 import com.example.relations.dto.ActorDto;
-import com.example.relations.dto.MovieDto;
 import com.example.relations.service.ActorService;
 import com.example.relations.service.CityService;
 import com.example.relations.service.MovieService;
