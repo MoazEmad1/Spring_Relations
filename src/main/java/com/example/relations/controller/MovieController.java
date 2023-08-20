@@ -33,7 +33,10 @@ public class MovieController {
     @PostMapping("/save")
     public String saveMovie(@ModelAttribute MovieDto movieDto,
                             @RequestParam(name = "selectedActors", required = false) List<Integer> selectedActors) {
-        movieService.saveMovie(movieDto, selectedActors);
+        if(movieDto.getId() == null)
+            movieService.saveMovie(movieDto, selectedActors);
+        else
+            movieService.updateMovie(movieDto, selectedActors);
         return "redirect:/movies";
     }
 

@@ -37,7 +37,10 @@ public class ActorController {
     public String saveOrUpdateActor(
             @ModelAttribute ActorDto actorDto,
             @RequestParam(name = "selectedMovies", required = false) List<Integer> selectedMovies) {
-        actorService.saveOrUpdateActor(actorDto, selectedMovies);
+        if(actorDto.getId() == null)
+            actorService.saveActor(actorDto, selectedMovies);
+        else
+            actorService.updateActor(actorDto, selectedMovies);
         return "redirect:/actors";
     }
 
@@ -52,8 +55,11 @@ public class ActorController {
     }
 
     @GetMapping("/delete/{id}")
-    public String deleteActor(@PathVariable int id) {
-        actorService.deleteActorById(id);
+    public String deleteActor(@PathVariable int id,Model model) {
+        String deleteMessage = actorService.deleteActorById(id);
+        if (deleteMessage.startsWith("Actor not found")) {
+            model.addAttribute("errorMessage", deleteMessage);
+        }
         return "redirect:/actors";
     }
 }

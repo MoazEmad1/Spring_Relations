@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,32 +35,43 @@ public class MovieService {
 
     public void saveMovie(MovieDto movieDto, List<Integer> selectedActors) {
         Movie movie = EntityDtoMapper.mapDtoToMovie(movieDto);
-
-        if (movie.getId() != null) {
-            Movie existingMovie = movieRepository.findById(movie.getId()).orElse(null);
-            if (existingMovie != null) {
-                existingMovie.setTitle(movie.getTitle());
-                existingMovie.getActors().clear();
-                if (selectedActors != null) {
-                    List<Actor> selectedActorList = actorRepository.findAllById(selectedActors);
-                    for (Actor actor : selectedActorList) {
-                        existingMovie.getActors().add(actor);
-                        actor.getMovies().add(existingMovie);
-                    }
-                }
-                movieRepository.save(existingMovie);
+        if (selectedActors != null) {
+            List<Actor> selectedActorList = actorRepository.findAllById(selectedActors);
+            movie.getActors().addAll(selectedActorList);
+            for (Actor actor : selectedActorList) {
+                actor.getMovies().add(movie);
             }
-        } else {
+        }
+
+        movieRepository.save(movie);
+    }
+
+    public void updateMovie(MovieDto updatedMovieDto, List<Integer> selectedActors) {
+        Optional<Movie> existingMovieOptional = movieRepository.findById(updatedMovieDto.getId());
+
+        if (existingMovieOptional.isPresent()) {
+            Movie existingMovie = existingMovieOptional.get();
+            existingMovie.setTitle(updatedMovieDto.getTitle());
+            for (Actor actor : existingMovie.getActors()) {
+                actor.getMovies().remove(existingMovie);
+            }
+            existingMovie.getActors().clear();
             if (selectedActors != null) {
                 List<Actor> selectedActorList = actorRepository.findAllById(selectedActors);
+                existingMovie.getActors().addAll(selectedActorList);
                 for (Actor actor : selectedActorList) {
-                    movie.getActors().add(actor);
-                    actor.getMovies().add(movie);
+                    actor.getMovies().add(existingMovie);
                 }
             }
-            movieRepository.save(movie);
+
+            movieRepository.save(existingMovie);
+        }
+        else {
+            //to be handled
+            return;
         }
     }
+
 
     public void deleteMovieById(int id) {
         movieRepository.deleteById(id);

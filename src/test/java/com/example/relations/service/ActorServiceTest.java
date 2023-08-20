@@ -64,7 +64,7 @@ class ActorServiceTest {
         when(actorRepository.findById(existingActorId)).thenReturn(Optional.of(existingActor));
         when(movieRepository.findAllById(selectedMovies)).thenReturn(new ArrayList<>());
 
-        ActorDto updatedActorDto = actorService.saveOrUpdateActor(actorDto, selectedMovies);
+        ActorDto updatedActorDto = actorService.saveActor(actorDto, selectedMovies);
 
         assertThat(updatedActorDto).isNotNull();
         assertThat(updatedActorDto.getId()).isEqualTo(existingActorId);

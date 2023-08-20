@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -37,58 +38,60 @@ public class ActorService {
         return null;
     }
 
-    public ActorDto saveOrUpdateActor(ActorDto actorDto, List<Integer> selectedMovies) {
-        Actor existingActor = actorRepository.findById(actorDto.getId()).orElse(null);
+    public ActorDto saveActor(ActorDto actorDto, List<Integer> selectedMovies) {
+        Actor newActor = EntityDtoMapper.mapDtoToActor(actorDto);
+        CityDto cityDto = actorDto.getCityDto();
+        newActor.setCity(EntityDtoMapper.mapDtoToCity(cityDto));
+        if (selectedMovies != null) {
+            List<Movie> selectedMovieList = movieRepository.findAllById(selectedMovies);
+            for (Movie movie : selectedMovieList) {
+                newActor.getMovies().add(movie);
+                movie.getActors().add(newActor);
+            }
+        }
 
+        Actor savedActor = actorRepository.save(newActor);
+        return EntityDtoMapper.mapActorToDto(savedActor);
+    }
+
+    public ActorDto updateActor(ActorDto actorDto, List<Integer> selectedMovies) {
+        Actor existingActor = actorRepository.findById(actorDto.getId()).orElse(null);
         if (existingActor != null) {
             existingActor.setName(actorDto.getName());
             existingActor.setAge(actorDto.getAge());
-
             CityDto cityDto = actorDto.getCityDto();
             City city = EntityDtoMapper.mapDtoToCity(cityDto);
             existingActor.setCity(city);
-            List<Movie> movies = existingActor.getMovies();
-            for (Movie movie : movies) {
+            for (Movie movie : existingActor.getMovies()) {
                 movie.getActors().remove(existingActor);
             }
-            movies.clear();
+            existingActor.getMovies().clear();
             if (selectedMovies != null) {
                 List<Movie> selectedMovieList = movieRepository.findAllById(selectedMovies);
                 for (Movie movie : selectedMovieList) {
-                    movies.add(movie);
+                    existingActor.getMovies().add(movie);
                     movie.getActors().add(existingActor);
                 }
             }
-            Actor savedActor = actorRepository.save(existingActor);
 
-            return EntityDtoMapper.mapActorToDto(savedActor);
+            Actor updatedActor = actorRepository.save(existingActor);
+            return EntityDtoMapper.mapActorToDto(updatedActor);
         } else {
-            Actor newActor = EntityDtoMapper.mapDtoToActor(actorDto);
-
-            CityDto cityDto = actorDto.getCityDto();
-            newActor.setCity(EntityDtoMapper.mapDtoToCity(cityDto));
-            if (selectedMovies != null) {
-                List<Movie> selectedMovieList = movieRepository.findAllById(selectedMovies);
-                for (Movie movie : selectedMovieList) {
-                    newActor.getMovies().add(movie);
-                    movie.getActors().add(newActor);
-                }
-            }
-            Actor savedActor = actorRepository.save(newActor);
-            return EntityDtoMapper.mapActorToDto(savedActor);
+            //to be handled
+            return null;
         }
-
     }
 
 
-    public void deleteActorById(int actorId) {
-        Actor actor = actorRepository.findById(actorId).orElse(null);
-        if (actor != null) {
-            List<Movie> movies = actor.getMovies();
-            for (Movie movie : movies) {
-                movie.getActors().remove(actor);
-            }
-            actorRepository.delete(actor);
+    public String deleteActorById(int actorId) {
+        Optional<Actor> actor = actorRepository.findById(actorId);
+        if (actor.isPresent()) {
+            actor.get().getMovies().forEach(movie -> movie.getActors().remove(actor.get()));
+            actorRepository.delete(actor.get());
+            return "Actor deleted successfully";
+        }
+        else {
+            return "Actor not found with ID: " + actorId;
         }
     }
 }
