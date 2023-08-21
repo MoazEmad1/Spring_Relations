@@ -20,7 +20,7 @@ public class Actor {
     private String name;
     private int age;
 
-    @ManyToMany(mappedBy = "actors")
+    @ManyToMany(mappedBy = "actors", cascade = CascadeType.REMOVE)
     private List<Movie> movies = new ArrayList<>();
 
     @ManyToOne(cascade = CascadeType.REMOVE)

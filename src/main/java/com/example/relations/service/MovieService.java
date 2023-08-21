@@ -9,8 +9,7 @@ import com.example.relations.mapper.EntityDtoMapper; // Import the mapper class
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -47,30 +46,33 @@ public class MovieService {
     }
 
     public void updateMovie(MovieDto updatedMovieDto, List<Integer> selectedActors) {
-        Optional<Movie> existingMovieOptional = movieRepository.findById(updatedMovieDto.getId());
-
-        if (existingMovieOptional.isPresent()) {
-            Movie existingMovie = existingMovieOptional.get();
+        Movie existingMovie = movieRepository.findById(updatedMovieDto.getId()).orElse(null);
+        if (existingMovie != null) {
             existingMovie.setTitle(updatedMovieDto.getTitle());
-            for (Actor actor : existingMovie.getActors()) {
-                actor.getMovies().remove(existingMovie);
-            }
-            existingMovie.getActors().clear();
+            List<Actor> newActors = new ArrayList<>();
             if (selectedActors != null) {
-                List<Actor> selectedActorList = actorRepository.findAllById(selectedActors);
-                existingMovie.getActors().addAll(selectedActorList);
-                for (Actor actor : selectedActorList) {
+                newActors.addAll(actorRepository.findAllById(selectedActors));
+            }
+            List<Actor> existingActors = existingMovie.getActors();
+            for (Actor actor : existingActors) {
+                if (!newActors.contains(actor)) {
+                    actor.getMovies().remove(existingMovie);
+                }
+            }
+            existingActors.retainAll(newActors);
+            for (Actor actor : newActors) {
+                if (!existingActors.contains(actor)) {
+                    existingActors.add(actor);
                     actor.getMovies().add(existingMovie);
                 }
             }
-
             movieRepository.save(existingMovie);
-        }
-        else {
+        } else {
             //to be handled
             return;
         }
     }
+
 
 
     public void deleteMovieById(int id) {

@@ -11,9 +11,7 @@ import com.example.relations.repository.MovieRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -62,14 +60,23 @@ public class ActorService {
             CityDto cityDto = actorDto.getCityDto();
             City city = EntityDtoMapper.mapDtoToCity(cityDto);
             existingActor.setCity(city);
-            for (Movie movie : existingActor.getMovies()) {
-                movie.getActors().remove(existingActor);
-            }
-            existingActor.getMovies().clear();
+
+            List<Movie> newMovies = new ArrayList<>();
             if (selectedMovies != null) {
-                List<Movie> selectedMovieList = movieRepository.findAllById(selectedMovies);
-                for (Movie movie : selectedMovieList) {
-                    existingActor.getMovies().add(movie);
+                newMovies.addAll(movieRepository.findAllById(selectedMovies));
+            }
+
+            List<Movie> existingMovies = existingActor.getMovies();
+            for (Movie movie : existingMovies) {
+                if (!newMovies.contains(movie)) {
+                    movie.getActors().remove(existingActor);
+                }
+            }
+
+            existingMovies.retainAll(newMovies);
+            for (Movie movie : newMovies) {
+                if (!existingMovies.contains(movie)) {
+                    existingMovies.add(movie);
                     movie.getActors().add(existingActor);
                 }
             }
@@ -86,7 +93,6 @@ public class ActorService {
     public String deleteActorById(int actorId) {
         Optional<Actor> actor = actorRepository.findById(actorId);
         if (actor.isPresent()) {
-            actor.get().getMovies().forEach(movie -> movie.getActors().remove(actor.get()));
             actorRepository.delete(actor.get());
             return "Actor deleted successfully";
         }
