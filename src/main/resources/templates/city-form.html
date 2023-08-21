@@ -9,7 +9,7 @@
 <form th:action="@{/cities/save}" th:object="${city}" method="post">
 
     <input type="hidden" th:field="*{id}">
-    <label>Name: <input type="text" th:field="*{name}"></label><br>
+    <label>Name: <input type="text" th:field="*{name}" required></label><br>
     <input type="submit" value="Save">
 </form>
 </body>

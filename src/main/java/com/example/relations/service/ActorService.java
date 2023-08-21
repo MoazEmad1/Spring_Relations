@@ -5,6 +5,7 @@ import com.example.relations.dto.CityDto;
 import com.example.relations.entity.Actor;
 import com.example.relations.entity.City;
 import com.example.relations.entity.Movie;
+import com.example.relations.exception.UpdateFailException;
 import com.example.relations.mapper.EntityDtoMapper;
 import com.example.relations.repository.ActorRepository;
 import com.example.relations.repository.MovieRepository;
@@ -84,8 +85,7 @@ public class ActorService {
             Actor updatedActor = actorRepository.save(existingActor);
             return EntityDtoMapper.mapActorToDto(updatedActor);
         } else {
-            //to be handled
-            return null;
+            throw new UpdateFailException("Actor not found with ID: " + actorDto.getId());
         }
     }
 

@@ -3,6 +3,7 @@ package com.example.relations.service;
 import com.example.relations.dto.MovieDto;
 import com.example.relations.entity.Actor;
 import com.example.relations.entity.Movie;
+import com.example.relations.exception.UpdateFailException;
 import com.example.relations.repository.ActorRepository;
 import com.example.relations.repository.MovieRepository;
 import com.example.relations.mapper.EntityDtoMapper; // Import the mapper class
@@ -68,8 +69,7 @@ public class MovieService {
             }
             movieRepository.save(existingMovie);
         } else {
-            //to be handled
-            return;
+            throw new UpdateFailException("Movie with id " + updatedMovieDto.getId() + " not found");
         }
     }
 

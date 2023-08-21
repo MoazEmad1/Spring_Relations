@@ -9,8 +9,8 @@
 <form th:action="@{/actors/save}" th:object="${actor}" method="post">
 
     <input type="hidden" th:field="*{id}">
-    <label>Name: <input type="text" th:field="*{name}"></label><br>
-    <label>Age: <input type="number" th:field="*{age}"></label><br>
+    <label>Name: <input type="text" th:field="*{name}" required></label><br>
+    <label>Age: <input type="number" th:field="*{age}" required></label><br>
     <label>City: <select th:field="*{cityDto.id}">
         <option th:each="city : ${cities}" th:value="${city.id}" th:text="${city.name}"></option>
     </select></label><br>
