@@ -93,6 +93,7 @@ public class ActorService {
     public String deleteActorById(int actorId) {
         Optional<Actor> actor = actorRepository.findById(actorId);
         if (actor.isPresent()) {
+            actor.get().getMovies().forEach(movie -> movie.getActors().remove(actor.get()));
             actorRepository.delete(actor.get());
             return "Actor deleted successfully";
         }
