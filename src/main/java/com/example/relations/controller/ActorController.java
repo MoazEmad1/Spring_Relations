@@ -59,6 +59,7 @@ public class ActorController {
         String deleteMessage = actorService.deleteActorById(id);
         if (deleteMessage.startsWith("Actor not found")) {
             model.addAttribute("errorMessage", deleteMessage);
+            return "error-page";
         }
         return "redirect:/actors";
     }

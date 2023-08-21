@@ -18,6 +18,9 @@
             <span th:text="${actor.name}"></span>
         </label><br>
     </div><br>
+    <div th:if="${errorMessage}">
+        <p th:text="${errorMessage}"></p>
+    </div>
     <input type="submit" value="Save">
 </form>
 </body>
