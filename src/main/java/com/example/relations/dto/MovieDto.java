@@ -1,8 +1,5 @@
 package com.example.relations.dto;
 
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import lombok.*;
 
 import java.util.ArrayList;

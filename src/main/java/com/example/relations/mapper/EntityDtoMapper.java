@@ -25,10 +25,12 @@ public class EntityDtoMapper {
         cityDto.setName(city.getName());
 
         mappedObjects.put(city, cityDto);
-        List<ActorDto> actorsDto = city.getActors().stream()
-                .map(EntityDtoMapper::mapActorToDto)
-                .collect(Collectors.toList());
-        cityDto.setActorsDto(actorsDto);
+        if(city.getActors() != null) {
+            List<ActorDto> actorsDto = city.getActors().stream()
+                    .map(EntityDtoMapper::mapActorToDto)
+                    .collect(Collectors.toList());
+            cityDto.setActorsDto(actorsDto);
+        }
         return cityDto;
     }
 
@@ -40,10 +42,14 @@ public class EntityDtoMapper {
         actorDto.setId(actor.getId());
         actorDto.setName(actor.getName());
         actorDto.setAge(actor.getAge());
-        actorDto.setCityDto(mapCityToDto(actor.getCity()));
-        actorDto.setMoviesDto(actor.getMovies().stream()
-                .map(EntityDtoMapper::mapMovieToDto)
-                .collect(Collectors.toList()));
+        if(actor.getCity() != null) {
+            actorDto.setCityDto(mapCityToDto(actor.getCity()));
+        }
+        if(actor.getMovies() != null) {
+            actorDto.setMoviesDto(actor.getMovies().stream()
+                    .map(EntityDtoMapper::mapMovieToDto)
+                    .collect(Collectors.toList()));
+        }
 
         mappedObjects.put(actor, actorDto);
         return actorDto;
@@ -57,11 +63,12 @@ public class EntityDtoMapper {
         movieDto.setId(movie.getId());
         movieDto.setTitle(movie.getTitle());
         mappedObjects.put(movie, movieDto);
-
-        List<ActorDto> actorsDto = movie.getActors().stream()
-                .map(EntityDtoMapper::mapActorToDto)
-                .collect(Collectors.toList());
-        movieDto.setActorsDto(actorsDto);
+        if(movie.getActors() != null) {
+            List<ActorDto> actorsDto = movie.getActors().stream()
+                    .map(EntityDtoMapper::mapActorToDto)
+                    .collect(Collectors.toList());
+            movieDto.setActorsDto(actorsDto);
+        }
         return movieDto;
     }
 
@@ -72,11 +79,14 @@ public class EntityDtoMapper {
         City city = new City();
         city.setId(cityDto.getId());
         city.setName(cityDto.getName());
+        if(cityDto.getActorsDto()!=null) {
+            List<Actor> actors = cityDto.getActorsDto().stream()
+                    .map(EntityDtoMapper::mapDtoToActor)
+                    .collect(Collectors.toList());
+            city.setActors(actors);
+        }
         mappedObjects.put(cityDto, city);
-        List<Actor> actors = cityDto.getActorsDto().stream()
-                .map(EntityDtoMapper::mapDtoToActor)
-                .collect(Collectors.toList());
-        city.setActors(actors);
+
         return city;
     }
 
@@ -88,10 +98,14 @@ public class EntityDtoMapper {
         actor.setId(actorDto.getId());
         actor.setName(actorDto.getName());
         actor.setAge(actorDto.getAge());
-        actor.setCity(mapDtoToCity(actorDto.getCityDto()));
-        actor.setMovies(actorDto.getMoviesDto().stream()
-                .map(EntityDtoMapper::mapDtoToMovie)
-                .collect(Collectors.toList()));
+        if(actorDto.getCityDto() != null) {
+            actor.setCity(mapDtoToCity(actorDto.getCityDto()));
+        }
+        if(actorDto.getMoviesDto() != null) {
+            actor.setMovies(actorDto.getMoviesDto().stream()
+                    .map(EntityDtoMapper::mapDtoToMovie)
+                    .collect(Collectors.toList()));
+        }
         mappedObjects.put(actorDto, actor);
         return actor;
     }
@@ -104,10 +118,12 @@ public class EntityDtoMapper {
         movie.setId(movieDto.getId());
         movie.setTitle(movieDto.getTitle());
         mappedObjects.put(movieDto, movie);
-        List<Actor> actors = movieDto.getActorsDto().stream()
-                .map(EntityDtoMapper::mapDtoToActor)
-                .collect(Collectors.toList());
-        movie.setActors(actors);
+        if(movieDto.getActorsDto() != null) {
+            List<Actor> actors = movieDto.getActorsDto().stream()
+                    .map(EntityDtoMapper::mapDtoToActor)
+                    .collect(Collectors.toList());
+            movie.setActors(actors);
+        }
         return movie;
     }
 }
