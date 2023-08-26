@@ -1,4 +1,4 @@
-package com.example.relations.config;
+/*package com.example.relations.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -55,4 +55,4 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-}
+}*/

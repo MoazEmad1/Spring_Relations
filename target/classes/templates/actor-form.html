@@ -14,13 +14,12 @@
     <label>City: <select th:field="*{cityDto.id}">
         <option th:each="city : ${cities}" th:value="${city.id}" th:text="${city.name}"></option>
     </select></label><br>
-    <label>Movies:</label><br>
+    <label>Movies:</label><br />
     <div th:each="movie : ${movies}">
         <label>
-            <input type="checkbox" name="selectedMovies" th:value="${movie.id}"
-                   th:checked="${actor.moviesDto.contains(movie)}"/>
+            <input type="checkbox" name="selectedMovies" th:field="*{moviesDto}" th:value="${movie}" th:checked="${actor.moviesDto.contains(movie)}"/>
             <span th:text="${movie.title}"></span>
-        </label><br>
+        </label><br/>
     </div><br>
     <input type="submit" value="Save">
 </form>

@@ -31,7 +31,7 @@ public class CityController {
     }
 
     @PostMapping("/save")
-    public String saveCity(@ModelAttribute CityDto cityDto) {
+    public String saveCity(@RequestBody CityDto cityDto) {
         cityService.saveCity(cityDto);
         return "redirect:/cities";
     }

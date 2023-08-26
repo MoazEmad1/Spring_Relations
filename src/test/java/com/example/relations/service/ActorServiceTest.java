@@ -73,7 +73,7 @@ class ActorServiceTest {
 
         when(actorRepository.save(any())).thenReturn(savedActor);
         when(movieRepository.findAllById(anyList())).thenReturn(new ArrayList<>());
-        ActorDto result = actorService.saveActor(actorDto, selectedMovies);
+        ActorDto result = actorService.saveActor(actorDto);
 
         assertThat(result).isNotNull();
         assertThat(result.getName()).isEqualTo("Moaz");

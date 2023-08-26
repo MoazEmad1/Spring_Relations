@@ -1,6 +1,7 @@
 package com.example.relations.controller;
 
 import com.example.relations.dto.ActorDto;
+import com.example.relations.dto.MovieDto;
 import com.example.relations.service.ActorService;
 import com.example.relations.service.CityService;
 import com.example.relations.service.MovieService;
@@ -33,14 +34,12 @@ public class ActorController {
         return "actor-form";
     }
 
-    @PostMapping("/save")
-    public String saveOrUpdateActor(
-            @ModelAttribute ActorDto actorDto,
-            @RequestParam(name = "selectedMovies", required = false) List<Integer> selectedMovies) {
+    @PostMapping(value = "/save")
+    public String saveOrUpdateActor(@RequestBody ActorDto actorDto) {
         if(actorDto.getId() == null)
-            actorService.saveActor(actorDto, selectedMovies);
+            actorService.saveActor(actorDto);
         else
-            actorService.updateActor(actorDto, selectedMovies);
+            actorService.updateActor(actorDto);
         return "redirect:/actors";
     }
 

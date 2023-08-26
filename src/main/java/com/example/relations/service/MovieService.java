@@ -1,5 +1,6 @@
 package com.example.relations.service;
 
+import com.example.relations.dto.ActorDto;
 import com.example.relations.dto.MovieDto;
 import com.example.relations.entity.Actor;
 import com.example.relations.entity.Movie;
@@ -33,10 +34,13 @@ public class MovieService {
         return null;
     }
 
-    public void saveMovie(MovieDto movieDto, List<Integer> selectedActors) {
+    public void saveMovie(MovieDto movieDto) {
         Movie movie = EntityDtoMapper.mapDtoToMovie(movieDto);
+        List<ActorDto> selectedActors = movieDto.getActorsDto();
         if (selectedActors != null) {
-            List<Actor> selectedActorList = actorRepository.findAllById(selectedActors);
+            List<Actor> selectedActorList = selectedActors.stream()
+                    .map(EntityDtoMapper::mapDtoToActor)
+                    .collect(Collectors.toList());
             movie.getActors().addAll(selectedActorList);
             for (Actor actor : selectedActorList) {
                 actor.getMovies().add(movie);
@@ -46,14 +50,14 @@ public class MovieService {
         movieRepository.save(movie);
     }
 
-    public void updateMovie(MovieDto updatedMovieDto, List<Integer> selectedActors) {
+    public void updateMovie(MovieDto updatedMovieDto) {
         Movie existingMovie = movieRepository.findById(updatedMovieDto.getId()).orElse(null);
         if (existingMovie != null) {
             existingMovie.setTitle(updatedMovieDto.getTitle());
-            List<Actor> newActors = new ArrayList<>();
-            if (selectedActors != null) {
-                newActors.addAll(actorRepository.findAllById(selectedActors));
-            }
+            List<Integer> selectedActors = updatedMovieDto.getActorsDto().stream()
+                    .map(ActorDto::getId)
+                    .collect(Collectors.toList());
+            List<Actor> newActors = new ArrayList<>(actorRepository.findAllById(selectedActors));
             List<Actor> existingActors = existingMovie.getActors();
             for (Actor actor : existingActors) {
                 if (!newActors.contains(actor)) {

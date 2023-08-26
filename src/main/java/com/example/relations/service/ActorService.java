@@ -2,6 +2,7 @@ package com.example.relations.service;
 
 import com.example.relations.dto.ActorDto;
 import com.example.relations.dto.CityDto;
+import com.example.relations.dto.MovieDto;
 import com.example.relations.entity.Actor;
 import com.example.relations.entity.City;
 import com.example.relations.entity.Movie;
@@ -13,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -37,23 +39,23 @@ public class ActorService {
         return null;
     }
 
-    public ActorDto saveActor(ActorDto actorDto, List<Integer> selectedMovies) {
+    public ActorDto saveActor(ActorDto actorDto) {
         Actor newActor = EntityDtoMapper.mapDtoToActor(actorDto);
         CityDto cityDto = actorDto.getCityDto();
         newActor.setCity(EntityDtoMapper.mapDtoToCity(cityDto));
-        if (selectedMovies != null) {
-            List<Movie> selectedMovieList = movieRepository.findAllById(selectedMovies);
-            for (Movie movie : selectedMovieList) {
-                newActor.getMovies().add(movie);
-                movie.getActors().add(newActor);
-            }
+        List<Integer> selectedMovies = actorDto.getMoviesDto().stream()
+                .map(MovieDto::getId)
+                .collect(Collectors.toList());
+        List<Movie> selectedMovieList = movieRepository.findAllById(selectedMovies);
+        for (Movie movie : selectedMovieList) {
+            newActor.getMovies().add(movie);
+            movie.getActors().add(newActor);
         }
-
         Actor savedActor = actorRepository.save(newActor);
         return EntityDtoMapper.mapActorToDto(savedActor);
     }
 
-    public ActorDto updateActor(ActorDto actorDto, List<Integer> selectedMovies) {
+    public ActorDto updateActor(ActorDto actorDto) {
         Actor existingActor = actorRepository.findById(actorDto.getId()).orElse(null);
         if (existingActor != null) {
             existingActor.setName(actorDto.getName());
@@ -62,10 +64,10 @@ public class ActorService {
             City city = EntityDtoMapper.mapDtoToCity(cityDto);
             existingActor.setCity(city);
 
-            List<Movie> newMovies = new ArrayList<>();
-            if (selectedMovies != null) {
-                newMovies.addAll(movieRepository.findAllById(selectedMovies));
-            }
+            List<Integer> selectedMovies = actorDto.getMoviesDto().stream()
+                    .map(MovieDto::getId)
+                    .collect(Collectors.toList());
+            List<Movie> newMovies = new ArrayList<>(movieRepository.findAllById(selectedMovies));
 
             List<Movie> existingMovies = existingActor.getMovies();
             for (Movie movie : existingMovies) {
@@ -81,7 +83,6 @@ public class ActorService {
                     movie.getActors().add(existingActor);
                 }
             }
-
             Actor updatedActor = actorRepository.save(existingActor);
             return EntityDtoMapper.mapActorToDto(updatedActor);
         } else {
